@@ -8,6 +8,7 @@ import connectDB from "./mongoDB/connectDB.js";
 import authRoutes from "./Router/auth.route.js";
 import userRoutes from "./Router/user.route.js";
 import taskRoutes from "./Router/task.route.js";
+import { errorHandler } from "./Middleware/errorHandler.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -31,11 +32,7 @@ app.use("/api/v1", userRoutes);
 app.use("/api/v1", taskRoutes);
 
 // handling errors
-app.use((err, req, res, next) => {
-  const errorStatus = err.status || 500;
-  const errorMessage = err.message || "something went wrong";
-  res.status(errorStatus).send(errorMessage);
-});
+app.use(errorHandler);
 
 //connecting the server
 mongoose.connection.once("open", () => {

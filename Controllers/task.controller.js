@@ -9,17 +9,9 @@ export const addTasks = async (req, res, next) => {
     if (!title || !priority || !checkList) {
       return next(createError(400, " all the mandotory fields are required"));
     }
-    //getting the token  stored in cookies
-    const token = req.cookies.accessToken || accesstoken;
-
-    if (!token) {
-      return next(createError(400, "user not authorized"));
-    }
-    //deceoding the token data
-    const data = jwt.decode(token);
 
     const taskData = new Task({
-      refuserId: data.id,
+      refuserId: req.userId,
       title,
       priority,
       checkList,
@@ -36,9 +28,15 @@ export const addTasks = async (req, res, next) => {
 
 export const getAllTasks = async (req, res, next) => {
   try {
-    //fetching all tasks
-    const data = await Task.find().lean().exec();
-    if (!data) return next(createError(404, "no data found"));
+    const Query = req.query.date;
+
+    //fetching tasks
+    const data = Query
+      ? await Task.find({ createdAt: { $gt: new Date(Query) } }).exec()
+      : await Task.find().exec();
+    if (!data.length) {
+      return next(createError(404, "no data found"));
+    }
     res.status(201).send({ sucess: true, data: data });
   } catch (error) {
     next(error);

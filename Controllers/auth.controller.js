@@ -52,10 +52,10 @@ export const loginController = async (req, res, next) => {
       .cookie("accessToken", token, {
         httpOnly: true,
         sameSite: "none",
-        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .status(200)
-      .send(info);
+      .send("you are logged in");
   } catch (error) {
     next(error);
   }
@@ -66,7 +66,6 @@ export const logoutController = async (req, res) => {
     .clearCookie("accessToken", {
       httpOnly: true,
       sameSite: "none",
-      secure: true,
     })
     .status(200)
     .send("user has been logged out");
