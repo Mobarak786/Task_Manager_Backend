@@ -8,6 +8,7 @@ import connectDB from "./mongoDB/connectDB.js";
 import authRoutes from "./Router/auth.route.js";
 import userRoutes from "./Router/user.route.js";
 import taskRoutes from "./Router/task.route.js";
+import analyticsRoutes from "./Router/analytics.route.js";
 import { errorHandler } from "./Middleware/errorHandler.js";
 
 const app = express();
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", taskRoutes);
+app.use("/api/v1", analyticsRoutes);
 
 // handling errors
 app.use(errorHandler);

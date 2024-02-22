@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import createError from "../Utils/createError.js";
 import Task from "../mongoDB/Models/task.model.js";
 
@@ -63,6 +62,27 @@ export const editTasks = async (req, res, next) => {
     );
 
     res.status(201).send({ message: "tasks has been updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+// edit the state eg: todo,inprogress,completed...
+export const editState = async (req, res, next) => {
+  try {
+    const { state } = req.body;
+    const id = req.params.taskId;
+    if (!state) {
+      return next(createError(400, " field is required"));
+    }
+    await Task.updateOne(
+      { _id: id },
+      {
+        $set: {
+          state,
+        },
+      }
+    );
+    res.status(201).send({ message: "state has been updated" });
   } catch (error) {
     next(error);
   }
